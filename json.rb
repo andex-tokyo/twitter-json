@@ -1,9 +1,7 @@
-require 'json'
-require 'uri'
-require 'net/http'
+require "json"
+require "net/http"
 require "open-uri"
 require "FileUtils"
-require "csv"
 
 
 def get_imageurl(feedurl)
