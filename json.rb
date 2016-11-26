@@ -35,9 +35,9 @@ def save_image(url)
   # write image data
     open(filePath, 'wb') do |output|
         open(url) do |pic|
-        output.write(pic.read)
+            output.write(pic.read)
+        end
     end
-end
 end
 
 
@@ -47,6 +47,6 @@ USERNAME = gets.chomp
 feedurl = 'https://www.instagram.com/' + URI.encode_www_form_component(USERNAME) + '/?__a=1'
 puts USERNAME + " データを取得します"
 get_imageurl(feedurl)
-p "完了しました。"
+puts "完了しました。"
 
 
