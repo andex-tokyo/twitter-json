@@ -2,18 +2,25 @@ require "json"
 require "net/http"
 require "open-uri"
 require "FileUtils"
+require "csv"
 
 
 def get_imageurl(feedurl)
-uri = URI.parse(feedurl)
-json = Net::HTTP.get(uri)
-result = JSON.parse(json)
-hash = result["user"]["media"]["nodes"]
-hash.each do |data|
-     url = data["thumbnail_src"]  
-    url[/\?\S+/] = ""
-   save_image(url)
-end
+    csvfilename = Time.now.strftime("%Y%m%d%H%M%S")
+    uri = URI.parse(feedurl)
+    json = Net::HTTP.get(uri)
+    result = JSON.parse(json)
+    hash = result["user"]["media"]["nodes"]
+    hash.each do |data|
+        url = data["thumbnail_src"]  
+        url[/\?\S+/] = ""
+        cap = data["caption"]
+        save_image(url)
+        filepath=File.basename(url)
+        CSV.open("./getInstagramData_#{csvfilename}.csv", "a") do |csv|
+            csv << [filepath, cap]
+        end
+    end
 end
 
 
@@ -27,11 +34,11 @@ def save_image(url)
   FileUtils.mkdir_p(dirName) unless FileTest.exist?(dirName)
 
   # write image data
-  open(filePath, 'wb') do |output|
-    open(url) do |pic|
-      output.write(pic.read)
+    open(filePath, 'wb') do |output|
+        open(url) do |pic|
+        output.write(pic.read)
     end
-  end
+end
 end
 
 
