@@ -3,10 +3,25 @@ require 'uri'
 require 'net/http'
 require "open-uri"
 require "FileUtils"
+require "csv"
+
+
+def get_imageurl(feedurl)
+uri = URI.parse(feedurl)
+json = Net::HTTP.get(uri)
+result = JSON.parse(json)
+hash = result["user"]["media"]["nodes"]
+hash.each do |data|
+     url = data["thumbnail_src"]  
+    url[/\?\S+/] = ""
+   save_image(url)
+end
+end
+
 
 def save_image(url)
   # ready filepath
-  fileName = File.basename(url)
+  fileName = USERNAME+"_"+File.basename(url)
   dirName = "./img/"
   filePath = dirName + fileName
 
@@ -21,23 +36,13 @@ def save_image(url)
   end
 end
 
-# 検索タグ
+
+
 print 'ユーザー名:'
 USERNAME = gets.chomp
-
-# 取得対象ページ
 feedurl = 'https://www.instagram.com/' + URI.encode_www_form_component(USERNAME) + '/?__a=1'
-
-puts USERNAME + " のデータを取得します"
-
-uri = URI.parse(feedurl)
-json = Net::HTTP.get(uri)
-result = JSON.parse(json)
-hash = result["user"]["media"]["nodes"]
-hash.each do |data|
-     url = data["thumbnail_src"]  
-    url[/\?\S+/] = ""
-   save_image(url)
-end
-
+puts USERNAME + " データを取得します"
+get_imageurl(feedurl)
 p "完了しました。"
+
+
