@@ -6,7 +6,6 @@ require "csv"
 
 
 def get_imageurl(feedurl)
-    csvfilename = Time.now.strftime("%Y%m%d%H%M%S")
     uri = URI.parse(feedurl)
     json = Net::HTTP.get(uri)
     result = JSON.parse(json)
@@ -17,7 +16,7 @@ def get_imageurl(feedurl)
         cap = data["caption"]
         save_image(url)
         filepath=File.basename(url)
-        CSV.open("./getInstagramData_#{csvfilename}.csv", "a") do |csv|
+        CSV.open("./#{USERNAME}.csv", "a") do |csv|
             csv << [filepath, cap]
         end
     end
@@ -27,7 +26,7 @@ end
 def save_image(url)
   # ready filepath
   fileName = USERNAME+"_"+File.basename(url)
-  dirName = "./img/"
+    dirName = "./img_#{USERNAME}/"
   filePath = dirName + fileName
 
   # create folder if not exist
